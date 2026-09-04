@@ -1,0 +1,83 @@
+#!/bin/sh
+# ----------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# ----------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------
+# Apache Maven Wrapper startup batch script, version 3.3.2
+# ----------------------------------------------------------------------------
+
+if [ -z "$MVNW_VERBOSE" ]; then set +x; else set -x; fi
+
+MVNW_SOURCE=/dev/null
+if [ -h "$0" ]; then MVNW_SOURCE="$0"; fi
+PRG="$0"
+while [ -h "$PRG" ]; do
+  ls=$(ls -ld "$PRG")
+  link=$(expr "$ls" : '.*-> \(.*\)$')
+  if expr "$link" : '/.*' >/dev/null; then PRG="$link"; else PRG=$(dirname "$PRG")"/$link"; fi
+done
+saveddir=$(pwd)
+BASE_DIR=$(dirname "$PRG")
+cd "$BASE_DIR" >/dev/null
+BASE_DIR=$(pwd)
+cd "$saveddir" >/dev/null
+
+wrapperProperties="$BASE_DIR/.mvn/wrapper/maven-wrapper.properties"
+distributionUrl=$(sed -n 's/^distributionUrl=//p' "$wrapperProperties")
+
+case "$distributionUrl" in
+  *maven-mvnd-*)
+    MVN_CMD=mvnd.sh
+    distributionUrl=$(echo "$distributionUrl" | sed -e 's/-bin\.[^.]*$//')
+    ;;
+  *)
+    MVN_CMD="mvn"
+    ;;
+esac
+
+distributionUrlName=${distributionUrl##*/}
+distributionUrlNameMain=${distributionUrlName%.*}
+distributionUrlNameMain=${distributionUrlNameMain%-bin}
+MAVEN_USER_HOME="${MAVEN_USER_HOME:-${HOME}/.m2}"
+MAVEN_HOME_PARENT="$MAVEN_USER_HOME/wrapper/dists/$distributionUrlNameMain"
+MAVEN_HOME_NAME=$(echo -n "$distributionUrl" | md5sum | awk '{print $1}')
+MAVEN_HOME="$MAVEN_HOME_PARENT/$MAVEN_HOME_NAME"
+
+if [ -d "$MAVEN_HOME" ]; then
+  exec "$MAVEN_HOME/bin/$MVN_CMD" "$@"
+fi
+
+TMP_DOWNLOAD_DIR="$(mktemp -d)"
+trap 'rm -rf "$TMP_DOWNLOAD_DIR"' EXIT
+
+mkdir -p "$MAVEN_HOME_PARENT"
+
+if command -v wget >/dev/null; then
+  wget "$distributionUrl" -O "$TMP_DOWNLOAD_DIR/$distributionUrlName"
+elif command -v curl >/dev/null; then
+  curl -f -o "$TMP_DOWNLOAD_DIR/$distributionUrlName" "$distributionUrl"
+else
+  echo "Neither wget nor curl is available to download $distributionUrl" 1>&2
+  exit 1
+fi
+
+unzip -q "$TMP_DOWNLOAD_DIR/$distributionUrlName" -d "$TMP_DOWNLOAD_DIR"
+mv "$TMP_DOWNLOAD_DIR/$distributionUrlNameMain" "$MAVEN_HOME"
+
+exec "$MAVEN_HOME/bin/$MVN_CMD" "$@"

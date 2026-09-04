@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: erp-backend
+  profiles:
+    # Swap to "postgres" when you want the real DB: --spring.profiles.active=postgres
+    active: h2
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+app:
+  jwt:
+    # Override in prod via APP_JWT_SECRET. Must be >= 32 bytes for HS256.
+    secret: ${APP_JWT_SECRET:change-me-dev-only-secret-key-min-32-bytes-long}
+    expiration-ms: 86400000
+  cors:
+    allowed-origins: http://localhost:5173
+  seed:
+    # DataSeeder runs only when true; keeps demo data out of a real deployment.
+    enabled: true
+  risk:
+    # Risk Radar weights: risk = wA*attendanceShortfall + wF*feeOverdue + wG*gradeDecline
+    weight-attendance: 0.40
+    weight-fee: 0.35
+    weight-grade: 0.25
+    attendance-threshold: 75
+    medium-threshold: 40
+    high-threshold: 70
+  llm:
+    # Optional; features degrade to a cached/fallback response when disabled.
+    enabled: false
+    provider: groq
+    base-url: https://api.groq.com/openai/v1
+    model: llama-3.3-70b-versatile
+    api-key: ${LLM_API_KEY:}
+
+logging:
+  level:
+    com.origin.erp: DEBUG

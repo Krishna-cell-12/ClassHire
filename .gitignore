@@ -1,0 +1,36 @@
+# ---- Java / Maven ----
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+!**/.mvn/wrapper/*.jar
+
+# ---- H2 local database ----
+backend/data/
+*.db
+*.mv.db
+*.trace.db
+
+# ---- Node / Vite ----
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+
+# ---- Env & secrets ----
+.env
+.env.*
+!.env.example
+
+# ---- Editors / OS ----
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log
+npm-debug.log*
