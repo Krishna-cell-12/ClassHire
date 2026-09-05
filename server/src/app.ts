@@ -20,7 +20,7 @@ import dashboardRoutes from './modules/dashboard/dashboard.routes';
 export const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+app.use(cors({ origin: '*', credentials: false }));
 app.use(express.json());
 app.use(morgan('dev'));
 
