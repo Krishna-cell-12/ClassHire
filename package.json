@@ -1,0 +1,24 @@
+{
+  "name": "origin-erp",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Origin ERP - integrated student management system (Express + Prisma API, React + Vite client)",
+  "scripts": {
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v && docker compose up -d --wait",
+    "install:all": "npm install && npm --prefix server install && npm --prefix frontend install",
+    "migrate": "npm --prefix server run prisma:migrate:deploy",
+    "seed": "npm --prefix server run seed",
+    "setup": "npm run db:up && npm run migrate && npm run seed",
+    "dev": "concurrently -n api,web -c magenta,cyan \"npm --prefix server run dev\" \"npm --prefix frontend run dev\"",
+    "dev:api": "npm --prefix server run dev",
+    "dev:web": "npm --prefix frontend run dev",
+    "build": "npm --prefix server run build && npm --prefix frontend run build",
+    "typecheck": "npm --prefix server run typecheck && npm --prefix frontend run typecheck",
+    "start": "npm --prefix server start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

@@ -1,68 +1,518 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ══════════════════════════════════════════════════════════════════
+   ORIGIN ERP — 3D DESIGN SYSTEM
+   Dark glass + orange neon is the default theme; [data-theme="light"]
+   swaps the same token names for a bright, "normal-looking" surface so
+   every component below works unchanged in both.
+   ══════════════════════════════════════════════════════════════════ */
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    /* ── Depth / geometry ── */
+    --radius: 1rem;
+    --scene-perspective: 1600px;
+    --tilt-max: 7deg;          /* set to 0 by [data-depth="off"] */
+    --lift: 1;                 /* multiplier for all Z translations */
 
-    /* Risk Radar buckets */
-    --risk-low: 142 71% 45%;
-    --risk-medium: 38 92% 50%;
-    --risk-high: 0 84% 60%;
+    /* ── Dark theme (default) ── */
+    --background: 230 30% 5%;
+    --foreground: 210 30% 96%;
+
+    --surface:        230 24% 9%;
+    --surface-raised: 230 22% 13%;
+    --surface-sunken: 232 32% 4%;
+
+    --card: 230 22% 11%;
+    --card-foreground: 210 30% 96%;
+    --popover: 230 26% 8%;
+    --popover-foreground: 210 30% 96%;
+
+    --primary: 24 95% 55%;
+    --primary-foreground: 24 100% 8%;
+    --secondary: 230 18% 16%;
+    --secondary-foreground: 210 20% 88%;
+    --muted: 230 18% 15%;
+    --muted-foreground: 222 14% 62%;
+    --accent: 230 20% 18%;
+    --accent-foreground: 210 25% 92%;
+    --destructive: 0 78% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 228 18% 21%;
+    --input: 230 22% 13%;
+    --ring: 24 95% 55%;
+
+    /* ── Semantic ── */
+    --risk-low:    152 65% 45%;
+    --risk-medium: 38 94% 55%;
+    --risk-high:   0 84% 62%;
+
+    --chart-green: 152 65% 45%;
+    --chart-amber: 38 94% 55%;
+    --chart-red:   0 84% 62%;
+
+    --neon-orange: 24 95% 58%;
+    --neon-cyan:   190 95% 55%;
+    --neon-violet: 265 90% 68%;
+    --neon-lime:   152 70% 48%;
+
+    /* ── Glass ── */
+    --glass:    linear-gradient(158deg, rgb(255 255 255 / 0.075) 0%, rgb(255 255 255 / 0.025) 38%, rgb(255 255 255 / 0.008) 100%);
+    --glass-hi: linear-gradient(180deg, rgb(255 255 255 / 0.16) 0%, rgb(255 255 255 / 0) 60%);
+    --glass-blur: 18px;
+    --glass-tint: 230 24% 10%;
+    --glass-alpha: 0.62;
+
+    /* ── Elevation: layered so cards read as physical slabs ── */
+    --elev-1: 0 1px 1px rgb(0 0 0 / 0.5), 0 2px 6px -2px rgb(0 0 0 / 0.55);
+    --elev-2: 0 2px 4px rgb(0 0 0 / 0.45), 0 10px 24px -8px rgb(0 0 0 / 0.6);
+    --elev-3: 0 4px 8px rgb(0 0 0 / 0.45), 0 22px 48px -14px rgb(0 0 0 / 0.72);
+    --elev-4: 0 10px 20px rgb(0 0 0 / 0.5), 0 48px 90px -28px rgb(0 0 0 / 0.85);
+    --rim: inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 0 0 1px rgb(255 255 255 / 0.045);
+
+    /* ── Backdrop ── */
+    --aurora-1: 24 95% 55%;
+    --aurora-2: 265 90% 60%;
+    --aurora-3: 190 95% 45%;
+    --aurora-alpha: 0.22;
+    --grid-line: 228 30% 60%;
+    --grid-alpha: 0.07;
+    --vignette: 0.85;
+
+    color-scheme: dark;
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+  :root[data-theme='light'] {
+    --background: 220 30% 96%;
+    --foreground: 224 40% 12%;
 
-    --risk-low: 142 61% 52%;
-    --risk-medium: 38 88% 58%;
-    --risk-high: 0 74% 66%;
+    --surface:        0 0% 100%;
+    --surface-raised: 0 0% 100%;
+    --surface-sunken: 220 24% 92%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 40% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 40% 12%;
+
+    --primary: 22 92% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 22% 94%;
+    --secondary-foreground: 224 24% 30%;
+    --muted: 220 22% 94%;
+    --muted-foreground: 222 14% 45%;
+    --accent: 220 24% 92%;
+    --accent-foreground: 224 34% 20%;
+    --destructive: 0 74% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 20% 87%;
+    --input: 0 0% 100%;
+    --ring: 22 92% 50%;
+
+    --risk-low:    152 62% 36%;
+    --risk-medium: 34 92% 46%;
+    --risk-high:   0 74% 52%;
+
+    --chart-green: 152 62% 36%;
+    --chart-amber: 34 92% 46%;
+    --chart-red:   0 74% 52%;
+
+    --neon-orange: 22 92% 50%;
+    --neon-cyan:   194 88% 40%;
+    --neon-violet: 262 72% 55%;
+    --neon-lime:   152 62% 38%;
+
+    --glass:    linear-gradient(158deg, rgb(255 255 255 / 0.9) 0%, rgb(255 255 255 / 0.6) 45%, rgb(255 255 255 / 0.42) 100%);
+    --glass-hi: linear-gradient(180deg, rgb(255 255 255 / 0.95) 0%, rgb(255 255 255 / 0) 55%);
+    --glass-blur: 14px;
+    --glass-tint: 0 0% 100%;
+    --glass-alpha: 0.78;
+
+    --elev-1: 0 1px 2px rgb(15 23 42 / 0.06), 0 1px 3px rgb(15 23 42 / 0.05);
+    --elev-2: 0 2px 6px -1px rgb(15 23 42 / 0.08), 0 8px 18px -6px rgb(15 23 42 / 0.1);
+    --elev-3: 0 4px 10px -2px rgb(15 23 42 / 0.09), 0 20px 44px -16px rgb(15 23 42 / 0.18);
+    --elev-4: 0 8px 18px -4px rgb(15 23 42 / 0.12), 0 44px 84px -28px rgb(15 23 42 / 0.28);
+    --rim: inset 0 1px 0 rgb(255 255 255 / 0.95), inset 0 0 0 1px rgb(15 23 42 / 0.05);
+
+    --aurora-1: 22 92% 55%;
+    --aurora-2: 262 80% 62%;
+    --aurora-3: 194 90% 50%;
+    --aurora-alpha: 0.14;
+    --grid-line: 224 30% 40%;
+    --grid-alpha: 0.055;
+    --vignette: 0.16;
+
+    color-scheme: light;
+  }
+
+  /* The 3D/Normal switch. Everything geometric keys off these two vars, so
+     flipping it instantly flattens the entire app without unmounting a thing. */
+  :root[data-depth='off'] {
+    --tilt-max: 0deg;
+    --lift: 0;
+    --scene-perspective: none;
+  }
+
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  /* The base colour lives on <html>, which paints as the canvas. <body> must
+     stay transparent: a body background paints *after* negative-z-index
+     descendants, which would hide the fixed -z-10 <Backdrop> entirely. */
+  /* `html[data-theme]` (0,1,1) matches the specificity of the pre-paint
+     fallback in index.html, and the bundle loads later — so the themed token
+     wins in both modes while the fallback still covers first paint. */
+  html,
+  html[data-theme] {
+    @apply bg-background;
+  }
+
+  body {
+    background: transparent;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+    @apply text-foreground antialiased;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .tabular-nums, code, kbd {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.6); background-clip: content-box; }
+
+  ::selection { background: hsl(var(--primary) / 0.3); color: hsl(var(--foreground)); }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 6px;
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
+/* ═══════════════════════════════════════════════════════
+   3D SCENE PRIMITIVES
+   ═══════════════════════════════════════════════════════ */
+@layer components {
+  /* Establishes the shared vanishing point for a group of cards. */
+  .scene {
+    perspective: var(--scene-perspective);
+    perspective-origin: 50% 22%;
   }
-  body {
-    @apply bg-background text-foreground;
+  .scene-flat { transform-style: preserve-3d; }
+
+  /* ── The core physical slab every panel is built from ──
+     IMPORTANT: the element itself carries no "grouping" property
+     (backdrop-filter, filter, opacity < 1, overflow, clip-path, mask). Any of
+     those would force `transform-style: flat` per spec and silently collapse
+     the Z separation of the <Layer> planes inside. The glass, blur and sheen
+     therefore all live on pseudo-elements, which may group freely without
+     affecting their parent's 3D context. */
+  .panel {
+    position: relative;
+    border-radius: var(--radius);
+    border: 1px solid hsl(var(--border) / 0.9);
+    box-shadow: var(--elev-2), var(--rim);
+    transform-style: preserve-3d;
+  }
+
+  /* Glass fill + blur + top-edge specular highlight. */
+  .panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background:
+      var(--glass-hi),
+      var(--glass),
+      hsl(var(--glass-tint) / var(--glass-alpha));
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    pointer-events: none;
+  }
+
+  /* Optional corner accent bloom, driven by --accent on the panel.
+     Replaces the blurred spans that used to need `overflow-hidden`. */
+  .panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background: radial-gradient(150px circle at 100% 0%, var(--accent, transparent), transparent 70%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* The pseudo-elements are positioned, so they would otherwise paint over any
+     static content. Lift real children above them. Layout utilities
+     (absolute, z-*) still win — they live in the later utilities layer. */
+  .panel > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .panel-raised { box-shadow: var(--elev-3), var(--rim); }
+  .panel-flush  { box-shadow: var(--elev-1), var(--rim); }
+
+  /* Contact shadow that sits *behind* a tilting card on the scene floor. */
+  .contact-shadow {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: -6px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.55), transparent 70%);
+    filter: blur(14px);
+    transform: translateZ(calc(-50px * var(--lift)));
+    opacity: calc(0.7 * var(--lift));
+    pointer-events: none;
+  }
+  :root[data-theme='light'] .contact-shadow {
+    background: radial-gradient(ellipse at center, rgb(15 23 42 / 0.3), transparent 70%);
+  }
+
+  /* Cursor-tracked specular glare, driven by --gx/--gy from Tilt3D. */
+  .glare {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      520px circle at var(--gx, 50%) var(--gy, 0%),
+      hsl(var(--primary) / 0.16),
+      transparent 42%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    mix-blend-mode: plus-lighter;
+  }
+  .group\/tilt:hover .glare { opacity: 1; }
+  :root[data-theme='light'] .glare { mix-blend-mode: multiply; opacity: 0; }
+  :root[data-theme='light'] .group\/tilt:hover .glare { opacity: 0.5; }
+
+  /* ── Neon edge ── */
+  .neon-edge {
+    box-shadow:
+      0 0 0 1px hsl(var(--primary) / 0.4),
+      0 0 22px -6px hsl(var(--primary) / 0.65),
+      var(--elev-2);
+  }
+
+  .text-glow { text-shadow: 0 0 22px hsl(var(--primary) / 0.55); }
+
+  /* ── Gradient hairline used to separate stacked 3D layers ── */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
+  }
+
+  /* ── Extruded 3D bar (used by Bar3D) ── */
+  .bar3d { transform-style: preserve-3d; position: relative; }
+  .bar3d-face { position: absolute; inset: 0; border-radius: 3px 3px 0 0; }
+  .bar3d-top {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    transform-origin: 50% 0%;
+    transform: rotateX(90deg);
+    filter: brightness(1.45);
+  }
+  .bar3d-side {
+    position: absolute;
+    top: 0; bottom: 0; right: 0;
+    transform-origin: 100% 50%;
+    transform: rotateY(90deg);
+    filter: brightness(0.62);
+  }
+
+  /* ── Nav slab ── */
+  .nav-slab {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease;
+  }
+  .nav-slab:hover { transform: translate3d(3px, 0, calc(14px * var(--lift))); }
+  .nav-slab-active {
+    background: linear-gradient(100deg, hsl(var(--primary) / 0.22), hsl(var(--primary) / 0.06));
+    color: hsl(var(--primary));
+    box-shadow: inset 0 1px 0 hsl(var(--primary) / 0.25), 0 6px 18px -8px hsl(var(--primary) / 0.7);
+    transform: translate3d(0, 0, calc(20px * var(--lift)));
+  }
+  .nav-slab-active::before {
+    content: '';
+    position: absolute;
+    left: -2px; top: 22%; bottom: 22%;
+    width: 3px;
+    border-radius: 99px;
+    background: hsl(var(--primary));
+    box-shadow: 0 0 14px 1px hsl(var(--primary) / 0.9);
+  }
+
+  /* ── Loading shimmer ── */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--muted-foreground) / 0.18) 50%,
+      hsl(var(--muted)) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: calc(var(--radius) - 4px);
+  }
+
+  /* ── Risk badges ── */
+  .risk-low {
+    background: hsl(var(--risk-low) / 0.14);
+    color: hsl(var(--risk-low));
+    border: 1px solid hsl(var(--risk-low) / 0.35);
+    box-shadow: 0 0 14px -6px hsl(var(--risk-low) / 0.8);
+  }
+  .risk-medium {
+    background: hsl(var(--risk-medium) / 0.14);
+    color: hsl(var(--risk-medium));
+    border: 1px solid hsl(var(--risk-medium) / 0.35);
+    box-shadow: 0 0 14px -6px hsl(var(--risk-medium) / 0.8);
+  }
+  .risk-high {
+    background: hsl(var(--risk-high) / 0.14);
+    color: hsl(var(--risk-high));
+    border: 1px solid hsl(var(--risk-high) / 0.35);
+    box-shadow: 0 0 14px -6px hsl(var(--risk-high) / 0.8);
+  }
+
+  /* ── Progress: a recessed channel with a lit fill ── */
+  .progress-bar {
+    height: 7px;
+    border-radius: 99px;
+    background: hsl(var(--surface-sunken));
+    box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.5), inset 0 0 0 1px hsl(var(--border) / 0.6);
+    overflow: hidden;
+  }
+  :root[data-theme='light'] .progress-bar {
+    background: hsl(var(--secondary));
+    box-shadow: inset 0 1px 2px rgb(15 23 42 / 0.12);
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    box-shadow: 0 0 12px -2px currentColor;
+    transition: width 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ── Data table ── */
+  .data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: hsl(var(--surface-raised) / 0.92);
+    backdrop-filter: blur(10px);
+  }
+  .data-table tbody tr {
+    transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+  }
+  .data-table tbody tr:hover {
+    background: hsl(var(--primary) / 0.07);
+    box-shadow: inset 3px 0 0 hsl(var(--primary));
+  }
+
+  /* ── Animated sparkline stroke ── */
+  .sparkline-path {
+    stroke-dasharray: 240;
+    animation: drawLine 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+
+  .circle-progress { transform: rotate(-90deg); transform-origin: 50% 50%; }
+
+  /* ── Chat bubbles ── */
+  .bubble-user {
+    background: linear-gradient(140deg, hsl(var(--primary) / 0.24), hsl(var(--primary) / 0.1));
+    border: 1px solid hsl(var(--primary) / 0.3);
+    box-shadow: 0 8px 22px -12px hsl(var(--primary) / 0.9), var(--rim);
+  }
+  .bubble-bot {
+    background: var(--glass), hsl(var(--glass-tint) / var(--glass-alpha));
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--elev-1), var(--rim);
+  }
+}
+
+@layer utilities {
+  .card-shadow    { box-shadow: var(--elev-1), var(--rim); }
+  .card-shadow-md { box-shadow: var(--elev-2), var(--rim); }
+
+  .kpi-green  { background-image: linear-gradient(135deg, hsl(var(--risk-low) / 0.14),    transparent 55%); }
+  .kpi-amber  { background-image: linear-gradient(135deg, hsl(var(--risk-medium) / 0.14), transparent 55%); }
+  .kpi-red    { background-image: linear-gradient(135deg, hsl(var(--risk-high) / 0.14),   transparent 55%); }
+  .kpi-orange { background-image: linear-gradient(135deg, hsl(var(--primary) / 0.16),     transparent 55%); }
+  .kpi-blue   { background-image: linear-gradient(135deg, hsl(var(--neon-cyan) / 0.14),   transparent 55%); }
+
+  .animate-fade-up { animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+  /* Film grain — keeps large dark gradients from banding on projectors. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes drawLine {
+  from { stroke-dashoffset: 240; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* Respect the OS setting — the UI flattens itself rather than spinning. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --tilt-max: 0deg;
+    --lift: 0;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

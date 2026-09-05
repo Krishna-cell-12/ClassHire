@@ -5,7 +5,13 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
-    "strict": true
+    "strict": true,
+    // A composite project must emit, but its output must not land beside the
+    // source: a generated vite.config.js takes precedence over vite.config.ts
+    // when Vite resolves its config, so a stale build silently overrides every
+    // later edit to the real config. Park the output out of the way.
+    "outDir": "./node_modules/.tmp/tsconfig-node",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig-node/.tsbuildinfo"
   },
   "include": ["vite.config.ts"]
 }

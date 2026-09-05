@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: origin-erp-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sms
+      POSTGRES_PASSWORD: sms_dev_password
+      POSTGRES_DB: sms
+    # Host port 5433, not 5432: leaves the default free for any other Postgres
+    # you already run locally. Keep DATABASE_URL in server/.env in sync.
+    ports:
+      - '5433:5432'
+    volumes:
+      - origin-erp-pgdata:/var/lib/postgresql/data
+    # The migrate/seed scripts run as soon as the port is open, so wait for the
+    # server to actually accept connections rather than just for the container.
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U sms -d sms']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  origin-erp-pgdata:

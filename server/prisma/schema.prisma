@@ -1,0 +1,238 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  FACULTY
+  STUDENT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum FeeStatus {
+  PENDING
+  PARTIAL
+  PAID
+  OVERDUE
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+enum ExamType {
+  MIDTERM
+  FINAL
+  QUIZ
+  ASSIGNMENT
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  role         Role
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  student Student?
+  faculty Faculty?
+}
+
+model Department {
+  id   String @id @default(uuid())
+  name String @unique
+  code String @unique
+
+  students Student[]
+  faculty  Faculty[]
+  courses  Course[]
+  feeSlabs FeeSlab[]
+}
+
+model Student {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rollNumber      String   @unique
+  firstName       String
+  lastName        String
+  dateOfBirth     DateTime
+  gender          Gender
+  phone           String?
+  address         String?
+  departmentId    String
+  department      Department @relation(fields: [departmentId], references: [id])
+  currentSemester Int
+  batchYear       Int
+  admissionDate   DateTime @default(now())
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  enrollments        Enrollment[]
+  attendanceRecords  AttendanceRecord[]
+  feePayments        FeePayment[]
+  resultMarks        ResultMark[]
+
+  @@index([departmentId])
+}
+
+model Faculty {
+  id           String @id @default(uuid())
+  userId       String @unique
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeCode String @unique
+  firstName    String
+  lastName     String
+  phone        String?
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  designation  String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  courses Course[]
+
+  @@index([departmentId])
+}
+
+model Course {
+  id           String  @id @default(uuid())
+  code         String  @unique
+  name         String
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  semester     Int
+  credits      Int
+  facultyId    String?
+  faculty      Faculty? @relation(fields: [facultyId], references: [id])
+
+  enrollments        Enrollment[]
+  attendanceSessions AttendanceSession[]
+  exams              Exam[]
+
+  @@index([departmentId])
+  @@index([facultyId])
+}
+
+model Enrollment {
+  id           String   @id @default(uuid())
+  studentId    String
+  student      Student  @relation(fields: [studentId], references: [id])
+  courseId     String
+  course       Course   @relation(fields: [courseId], references: [id])
+  academicYear String
+  createdAt    DateTime @default(now())
+
+  @@unique([studentId, courseId, academicYear])
+  @@index([courseId])
+}
+
+model AttendanceSession {
+  id        String   @id @default(uuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  date      DateTime
+  topic     String?
+  createdAt DateTime @default(now())
+
+  records AttendanceRecord[]
+
+  @@unique([courseId, date])
+}
+
+model AttendanceRecord {
+  id        String            @id @default(uuid())
+  sessionId String
+  session   AttendanceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  studentId String
+  student   Student           @relation(fields: [studentId], references: [id])
+  status    AttendanceStatus
+  markedAt  DateTime          @default(now())
+
+  @@unique([sessionId, studentId])
+  @@index([studentId])
+}
+
+model FeeSlab {
+  id           String     @id @default(uuid())
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  semester     Int
+  batchYear    Int
+  tuitionFee   Decimal    @db.Decimal(10, 2)
+  labFee       Decimal    @db.Decimal(10, 2)
+  libraryFee   Decimal    @db.Decimal(10, 2)
+  otherFee     Decimal    @db.Decimal(10, 2)
+  totalAmount  Decimal    @db.Decimal(10, 2)
+  dueDate      DateTime
+
+  payments FeePayment[]
+
+  @@unique([departmentId, semester, batchYear])
+}
+
+model FeePayment {
+  id              String    @id @default(uuid())
+  studentId       String
+  student         Student   @relation(fields: [studentId], references: [id])
+  feeSlabId       String
+  feeSlab         FeeSlab   @relation(fields: [feeSlabId], references: [id])
+  amountPaid      Decimal   @db.Decimal(10, 2)
+  paymentDate     DateTime  @default(now())
+  paymentMode     String?
+  transactionRef  String?
+  status          FeeStatus @default(PENDING)
+  createdAt       DateTime  @default(now())
+
+  @@index([studentId])
+  @@index([feeSlabId])
+}
+
+model Exam {
+  id        String   @id @default(uuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  examType  ExamType
+  title     String
+  examDate  DateTime
+  maxMarks  Decimal  @db.Decimal(5, 2)
+  createdAt DateTime @default(now())
+
+  results ResultMark[]
+
+  @@index([courseId])
+}
+
+model ResultMark {
+  id            String   @id @default(uuid())
+  examId        String
+  exam          Exam     @relation(fields: [examId], references: [id])
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id])
+  marksObtained Decimal  @db.Decimal(5, 2)
+  grade         String?
+  remarks       String?
+  enteredBy     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([examId, studentId])
+  @@index([studentId])
+}

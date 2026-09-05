@@ -18,6 +18,13 @@ dist-ssr/
 .vite/
 *.local
 
+# ---- TypeScript build output ----
+# A compiled vite.config.js beside vite.config.ts wins during Vite's config
+# resolution, so a committed one silently shadows the real config.
+*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
 # ---- Env & secrets ----
 .env
 .env.*
